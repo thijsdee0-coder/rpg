@@ -57,6 +57,10 @@ g++ -std=c++17 -o PoliticalRPG main.cpp
 
 This is a text-based RPG where you take on the role of a political party leader. Your starting choice affects your resources, influence, and available strategies. The game is designed to simulate political and economic decision-making in a democratic system.
 
+## Known Issues
+
+- Starting as a coalition or opposition party doesn't actually affect gameplay mechanics yet. The choice is recorded but doesn't change game behavior.
+
 ## Future Development
 
 The current version provides the basic framework and starting menu. Future versions will include:
