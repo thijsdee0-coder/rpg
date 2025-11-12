@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Add executable
-add_executable(PoliticalRPG main.cpp)
+add_executable(PoliticalRPG src/main.cpp)
 
 # Set output directory
 set_target_properties(PoliticalRPG PROPERTIES
