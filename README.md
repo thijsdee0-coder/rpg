@@ -91,6 +91,7 @@ Simply open `web/index.html` in a web browser to start playing.
 ## Known Issues
 
 - Starting as a coalition or opposition party doesn't actually affect gameplay mechanics yet. The choice is recorded but doesn't change game behavior.
+- Save and load menu is positioned at the bottom of the screen (UI improvement needed).
 
 ## License
 
