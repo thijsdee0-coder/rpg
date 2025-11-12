@@ -102,4 +102,6 @@ Simply open `web/index.html` in a web browser to start playing.
 
 ## License
 
-[Add your license here]
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+**Important:** The source code (`web/script.js`) is provided for educational and reference purposes. While the code is publicly visible, unauthorized copying, modification, or distribution for commercial purposes may be subject to additional restrictions. Please contact the repository owner for licensing inquiries.

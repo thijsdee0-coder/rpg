@@ -1,3 +1,13 @@
+/**
+ * Political RPG Game Logic
+ * 
+ * Copyright (c) 2025 Political RPG
+ * 
+ * This source code is provided for educational and reference purposes.
+ * Unauthorized copying, modification, or distribution is prohibited.
+ * 
+ * For licensing inquiries, please contact the repository owner.
+ */
 // Political RPG Game Logic
 class PoliticalRPG {
     constructor() {
