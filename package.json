@@ -1,0 +1,23 @@
+{
+  "name": "political-rpg",
+  "version": "1.0.0",
+  "description": "A web-based political and economical role-playing game",
+  "scripts": {
+    "build": "terser web/script.js -o web/script.min.js -c -m --source-map \"url='script.min.js.map'\"",
+    "build:obfuscate": "javascript-obfuscator web/script.js --output web/script.obf.js --compact true --control-flow-flattening true",
+    "dev": "echo 'Development mode - using unminified script.js'"
+  },
+  "keywords": [
+    "game",
+    "political",
+    "rpg",
+    "web"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "terser": "^5.24.0",
+    "javascript-obfuscator": "^4.1.0"
+  }
+}
+

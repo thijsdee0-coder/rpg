@@ -66,4 +66,14 @@ Release/
 .DS_Store
 Thumbs.db
 
+# Node.js
+node_modules/
+package-lock.json
+
+# Minified/Obfuscated files (keep source private)
+web/script.min.js
+web/script.min.js.map
+web/script.obf.js
+web/script.obf.js.map
+
 

@@ -12,7 +12,8 @@ rpg/
 │   └── styles.css         # CSS styling for web interface
 ├── docs/                   # Documentation
 │   ├── README_UI.md       # Web UI documentation and features
-│   └── EVENT_SYSTEM_DEMO.md # Event system architecture documentation
+│   ├── EVENT_SYSTEM_DEMO.md # Event system architecture documentation
+│   └── CODE_PROTECTION.md # Code protection strategies and options
 ├── tests/                  # Test files and examples
 │   ├── test_*.txt         # Text-based test scenarios for various game features
 │   └── test_*.html        # HTML test pages for web UI components
@@ -52,6 +53,12 @@ rpg/
   - Event definitions structure
   - Dynamic option generation
   - Event effects and mechanics
+
+- **`CODE_PROTECTION.md`**: Guide for protecting code while keeping mechanics accessible:
+  - Minification and obfuscation strategies
+  - Server-side API approaches
+  - Code splitting techniques
+  - Best practices for code protection
 
 ### Test Files (`tests/`)
 
