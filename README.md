@@ -84,7 +84,13 @@ rpg/
 
 ## Quick Start
 
-Simply open `web/index.html` in a web browser to start playing.
+**Important:** To play the game, you must extract the entire project folder (or at least the `web/` folder) to your computer. Simply opening the HTML file directly from a zip archive will not work properly - only the HTML will load without the CSS and JavaScript files.
+
+1. Download or clone this repository
+2. Extract the files to a folder on your computer
+3. Open `web/index.html` in a web browser to start playing
+
+**Note:** The game requires all files (HTML, CSS, and JavaScript) to be in the same folder structure for proper functionality.
 
 ## Features
 
