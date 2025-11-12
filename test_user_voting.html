@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Voting Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-section {
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .test-result {
+            background-color: #f8f9fa;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 3px;
+        }
+        .success { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .party-vote {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px;
+            border-bottom: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    <h1>User Voting Test</h1>
+    
+    <div class="test-section">
+        <h3>Test User Party Voting</h3>
+        <button onclick="testUserVoting()">Test User Voting Logic</button>
+        <div id="testResults"></div>
+    </div>
+
+    <script>
+        // Simplified test of the user voting system
+        class UserVotingTest {
+            constructor() {
+                this.gameState = {
+                    partyName: 'Test Party'
+                };
+                
+                this.allParties = [
+                    { name: 'Test Party', socialValue: 3, economicValue: 7 }, // User's party
+                    { name: 'Conservative Party', socialValue: 8, economicValue: 8 },
+                    { name: 'Progressive Party', socialValue: 2, economicValue: 2 },
+                    { name: 'Centrist Party', socialValue: 5, economicValue: 5 }
+                ];
+            }
+            
+            calculatePartyPreference(party) {
+                const socialValue = party.socialValue;
+                const economicValue = party.economicValue;
+                
+                const isConservative = socialValue >= 6;
+                const isProgressive = socialValue <= 4;
+                const isLeft = economicValue <= 4;
+                const isRight = economicValue >= 6;
+                
+                if (isConservative && isRight) return 'conservative-right';
+                if (isConservative && isLeft) return 'conservative-left';
+                if (isProgressive && isRight) return 'progressive-right';
+                if (isProgressive && isLeft) return 'progressive-left';
+                
+                // Centrist fallback
+                if (socialValue > 5 && economicValue > 5) return 'conservative-right';
+                if (socialValue > 5 && economicValue < 5) return 'conservative-left';
+                if (socialValue < 5 && economicValue > 5) return 'progressive-right';
+                return 'progressive-left';
+            }
+            
+            calculatePartyVotes(userChoice = null) {
+                const partyVotes = [];
+                
+                this.allParties.forEach(party => {
+                    let partyVote;
+                    
+                    // Check if this is the user's party and user made a choice
+                    if (userChoice && party.name === this.gameState.partyName) {
+                        // User's party votes for the user's choice
+                        partyVote = userChoice;
+                    } else {
+                        // Other parties vote based on their ideology
+                        partyVote = this.calculatePartyPreference(party);
+                    }
+                    
+                    partyVotes.push({
+                        party: party,
+                        vote: partyVote,
+                        supportsChosen: false
+                    });
+                });
+                
+                return partyVotes;
+            }
+            
+            testUserVoting() {
+                const results = document.getElementById('testResults');
+                results.innerHTML = '<div class="test-result">Testing user voting logic...</div>';
+                
+                try {
+                    // Test without user choice
+                    const votesWithoutChoice = this.calculatePartyVotes();
+                    
+                    // Test with user choice
+                    const userChoice = 'progressive-left';
+                    const votesWithChoice = this.calculatePartyVotes(userChoice);
+                    
+                    // Find user's party votes
+                    const userPartyWithoutChoice = votesWithoutChoice.find(v => v.party.name === this.gameState.partyName);
+                    const userPartyWithChoice = votesWithChoice.find(v => v.party.name === this.gameState.partyName);
+                    
+                    let html = '<div class="test-result">';
+                    html += '<h4>Voting Results:</h4>';
+                    
+                    html += '<h5>Without User Choice (Ideology-based):</h5>';
+                    votesWithoutChoice.forEach(vote => {
+                        const isUserParty = vote.party.name === this.gameState.partyName;
+                        html += `<div class="party-vote ${isUserParty ? 'success' : ''}">
+                            <span>${vote.party.name}</span>
+                            <span>${vote.vote} ${isUserParty ? '(User Party)' : ''}</span>
+                        </div>`;
+                    });
+                    
+                    html += '<h5>With User Choice (progressive-left):</h5>';
+                    votesWithChoice.forEach(vote => {
+                        const isUserParty = vote.party.name === this.gameState.partyName;
+                        html += `<div class="party-vote ${isUserParty ? 'success' : ''}">
+                            <span>${vote.party.name}</span>
+                            <span>${vote.vote} ${isUserParty ? '(User Party)' : ''}</span>
+                        </div>`;
+                    });
+                    
+                    // Check if user's party voted correctly
+                    if (userPartyWithChoice.vote === userChoice) {
+                        html += '<div class="test-result success">✅ User party correctly voted for user choice!</div>';
+                    } else {
+                        html += `<div class="test-result error">❌ User party voted for ${userPartyWithChoice.vote} instead of ${userChoice}</div>`;
+                    }
+                    
+                    html += '</div>';
+                    results.innerHTML = html;
+                    
+                } catch (error) {
+                    results.innerHTML = `<div class="test-result error">❌ Error: ${error.message}</div>`;
+                }
+            }
+        }
+        
+        const votingTest = new UserVotingTest();
+        
+        function testUserVoting() {
+            votingTest.testUserVoting();
+        }
+    </script>
+</body>
+</html>

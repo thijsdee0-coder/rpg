@@ -1,0 +1,1338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Political RPG Game</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1><i class="fas fa-landmark"></i> Political RPG</h1>
+                <div class="game-stats">
+                    <div class="stat">
+                        <span class="stat-label">Day</span>
+                        <span class="stat-value" id="currentDay">1</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Party Control</span>
+                        <span class="stat-value" id="partyControl">0%</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Tax Rate</span>
+                        <span class="stat-value" id="taxRate">25.0%</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="nav-bar">
+            <div class="nav-item" onclick="game.showScreen('governmentScreen')">
+                <i class="fas fa-landmark"></i>
+                <span>Government</span>
+            </div>
+            <div class="nav-item" onclick="game.showVoterIssues()">
+                <i class="fas fa-poll"></i>
+                <span>Voter Issues</span>
+            </div>
+            <div class="nav-item" onclick="game.showStatistics()">
+                <i class="fas fa-chart-bar"></i>
+                <span>Statistics</span>
+            </div>
+            <div class="nav-item" onclick="game.showScreen('securityScreen')">
+                <i class="fas fa-shield-alt"></i>
+                <span>Security</span>
+            </div>
+            <div class="nav-item" onclick="game.showNews()">
+                <i class="fas fa-newspaper"></i>
+                <span>News</span>
+            </div>
+            <div class="nav-item" onclick="game.advanceDay()">
+                <i class="fas fa-calendar-plus"></i>
+                <span>Next Day</span>
+            </div>
+            <div class="nav-item" onclick="game.manualSave()">
+                <i class="fas fa-save"></i>
+                <span>Save</span>
+            </div>
+            <div class="nav-item" onclick="game.loadGame()">
+                <i class="fas fa-folder-open"></i>
+                <span>Load</span>
+            </div>
+            <div class="nav-item" onclick="game.showPlayers()">
+                <i class="fas fa-users"></i>
+                <span>Players</span>
+            </div>
+            <div class="nav-item" onclick="game.testSaveLoad()">
+                <i class="fas fa-bug"></i>
+                <span>Test</span>
+            </div>
+            <div class="nav-item" onclick="game.showSaveMenu()">
+                <i class="fas fa-save"></i>
+                <span>Save Test</span>
+            </div>
+            <div class="nav-item" onclick="game.showLoadMenu()">
+                <i class="fas fa-folder-open"></i>
+                <span>Load Test</span>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Welcome Screen -->
+            <div id="welcomeScreen" class="screen active">
+                <div class="welcome-container">
+                    <div class="welcome-header">
+                        <h2>Welcome to the World of Politics</h2>
+                        <p>Your decisions will shape the future of your party and nation.</p>
+                    </div>
+                    <div class="welcome-actions">
+                        <button class="btn btn-primary" onclick="startGame()">
+                            <i class="fas fa-play"></i> Start New Game
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Party Setup Screen -->
+            <div id="partySetupScreen" class="screen">
+                <div class="setup-container">
+                    <h2>Choose Your Starting Position</h2>
+                    <div class="party-options">
+                        <div class="party-option" onclick="selectPartyType('Small opposition party')">
+                            <div class="party-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <h3>Small Opposition Party</h3>
+                            <p>Limited resources but more freedom to criticize the government and build your base.</p>
+                        </div>
+                        <div class="party-option" onclick="selectPartyType('Big opposition party')">
+                            <div class="party-icon">
+                                <i class="fas fa-crown"></i>
+                            </div>
+                            <h3>Big Opposition Party</h3>
+                            <p>Significant influence and resources, but you must manage a larger organization.</p>
+                        </div>
+                        <div class="party-option" onclick="selectPartyType('Small coalition party')">
+                            <div class="party-icon">
+                                <i class="fas fa-handshake"></i>
+                            </div>
+                            <h3>Small Coalition Party</h3>
+                            <p>Part of the government with limited power. You can influence policy but must compromise.</p>
+                        </div>
+                        <div class="party-option" onclick="selectPartyType('Big coalition party')">
+                            <div class="party-icon">
+                                <i class="fas fa-gavel"></i>
+                            </div>
+                            <h3>Big Coalition Party</h3>
+                            <p>Major government influence and resources, but you must manage complex coalition dynamics.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ideology Selection Screen -->
+            <div id="ideologyScreen" class="screen">
+                <div class="ideology-container">
+                    <h2>Choose Your Ideology</h2>
+                    <div class="ideology-section">
+                        <h3>Social Ideology</h3>
+                        <div class="ideology-options">
+                            <div class="ideology-option" onclick="selectSocialIdeology('Conservative')">
+                                <div class="ideology-icon conservative">
+                                    <i class="fas fa-shield-alt"></i>
+                                </div>
+                                <h4>Conservative</h4>
+                                <p>Traditional values, law and order, gradual social change</p>
+                            </div>
+                            <div class="ideology-option" onclick="selectSocialIdeology('Progressive')">
+                                <div class="ideology-icon progressive">
+                                    <i class="fas fa-heart"></i>
+                                </div>
+                                <h4>Progressive</h4>
+                                <p>Social reform, equality, rapid social change</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ideology-section">
+                        <h3>Economic Ideology</h3>
+                        <div class="ideology-options">
+                            <div class="ideology-option" onclick="selectEconomicIdeology('Left')">
+                                <div class="ideology-icon left">
+                                    <i class="fas fa-balance-scale"></i>
+                                </div>
+                                <h4>Left (Socialist/Social Democratic)</h4>
+                                <p>Government intervention, social welfare, wealth redistribution</p>
+                            </div>
+                            <div class="ideology-option" onclick="selectEconomicIdeology('Right')">
+                                <div class="ideology-icon right">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                                <h4>Right (Free Market/Capitalist)</h4>
+                                <p>Free markets, limited government, individual responsibility</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Party Naming Screen -->
+            <div id="namingScreen" class="screen">
+                <div class="naming-container">
+                    <h2>Name Your Party</h2>
+                    <div class="naming-form">
+                        <input type="text" id="partyNameInput" placeholder="Enter your party name" maxlength="50">
+                        <button class="btn btn-primary" onclick="setPartyName()">
+                            <i class="fas fa-check"></i> Continue
+                        </button>
+                    </div>
+                    <div class="party-preview">
+                        <h3>Your Party Preview</h3>
+                        <div class="party-card">
+                            <div class="party-info">
+                                <h4 id="previewPartyName">Your Party</h4>
+                                <div class="ideology-display">
+                                    <span class="ideology-badge" id="previewSocial">Social: -</span>
+                                    <span class="ideology-badge" id="previewEconomic">Economic: -</span>
+                                </div>
+                                <div class="spectrum-display">
+                                    <div class="spectrum">
+                                        <label>Social</label>
+                                        <div class="spectrum-bar" id="socialSpectrum">
+                                            <div class="spectrum-marker" id="socialMarker"></div>
+                                        </div>
+                                        <div class="spectrum-labels">
+                                            <span>Progressive</span>
+                                            <span>Conservative</span>
+                                        </div>
+                                    </div>
+                                    <div class="spectrum">
+                                        <label>Economic</label>
+                                        <div class="spectrum-bar" id="economicSpectrum">
+                                            <div class="spectrum-marker" id="economicMarker"></div>
+                                        </div>
+                                        <div class="spectrum-labels">
+                                            <span>Left</span>
+                                            <span>Right</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Game Screen -->
+            <div id="gameScreen" class="screen">
+                <div class="game-container">
+                    <div class="game-header">
+                        <h2>Political Dashboard</h2>
+                        <div class="player-party-info">
+                            <h3 id="playerPartyName">Your Party</h3>
+                            <div class="party-stats">
+                                <span class="party-stat">Type: <span id="playerPartyType">-</span></span>
+                                <span class="party-stat">Control: <span id="playerPartyControl">-</span></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="game-actions">
+                        <button class="btn btn-secondary" onclick="showGovernmentOverview()">
+                            <i class="fas fa-building"></i> Government Overview
+                        </button>
+                        <button class="btn btn-primary" onclick="advanceDay()">
+                            <i class="fas fa-calendar-plus"></i> Advance Day
+                        </button>
+                        <button class="btn btn-danger" onclick="quitGame()">
+                            <i class="fas fa-sign-out-alt"></i> Quit Game
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Government Overview Screen -->
+            <div id="governmentScreen" class="screen">
+                <div class="government-container">
+                    <div class="government-header">
+                        <h2>Government Overview</h2>
+                        <button class="btn btn-secondary" onclick="showGameScreen()">
+                            <i class="fas fa-arrow-left"></i> Back to Game
+                        </button>
+                    </div>
+                    
+                    <!-- Government Leadership Section -->
+                    <div class="government-leadership">
+                        <div class="leadership-header">
+                            <h3><i class="fas fa-crown"></i> Government Leadership</h3>
+                            <p>Current government officials and ministers</p>
+                        </div>
+                        
+                        <div class="leadership-content">
+                            <!-- President Section -->
+                            <div class="president-section">
+                                <div class="president-card" id="presidentCard">
+                                    <!-- President will be generated here -->
+                                </div>
+                            </div>
+                            
+                            <!-- Ministers Section -->
+                            <div class="ministers-section">
+                                <h4><i class="fas fa-users"></i> Cabinet Ministers</h4>
+                                <div class="ministers-grid" id="ministersGrid">
+                                    <!-- Ministers will be generated here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="parties-grid" id="partiesGrid">
+                        <!-- Parties will be dynamically generated here -->
+                    </div>
+                    
+                    <div class="coalition-summary">
+                        <div class="coalition-info">
+                            <h3>Coalition Summary</h3>
+                            <div class="coalition-stats">
+                                <div class="coalition-stat">
+                                    <span class="stat-label">Coalition Control</span>
+                                    <span class="stat-value" id="coalitionTotal">0%</span>
+                                </div>
+                                <div class="coalition-stat">
+                                    <span class="stat-label">Opposition Control</span>
+                                    <span class="stat-value" id="oppositionTotal">0%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Political Compass Section -->
+                    <div class="compass-section">
+                        <div class="compass-header">
+                            <h3><i class="fas fa-compass"></i> Political Compass</h3>
+                            <p>Visual representation of party positions on social and economic issues</p>
+                        </div>
+                        
+                        <div class="compass-content">
+                            <div class="compass-chart">
+                                <svg id="compassSVG" width="500" height="500" viewBox="0 0 500 500">
+                                    <!-- Grid lines -->
+                                    <line x1="50" y1="250" x2="450" y2="250" stroke="#e2e8f0" stroke-width="2"/>
+                                    <line x1="250" y1="50" x2="250" y2="450" stroke="#e2e8f0" stroke-width="2"/>
+                                    
+                                    <!-- Axis labels -->
+                                    <text x="50" y="240" text-anchor="middle" class="axis-label">Left</text>
+                                    <text x="450" y="240" text-anchor="middle" class="axis-label">Right</text>
+                                    <text x="240" y="40" text-anchor="middle" class="axis-label">Progressive</text>
+                                    <text x="240" y="460" text-anchor="middle" class="axis-label">Conservative</text>
+                                    
+                                    <!-- Party dots will be generated here -->
+                                </svg>
+                                
+                                <!-- Compass tooltip -->
+                                <div id="compassTooltip" class="compass-tooltip" style="display: none;">
+                                    <div class="tooltip-content">
+                                        <div class="tooltip-header">
+                                            <span class="tooltip-party-name"></span>
+                                            <span class="tooltip-percentage"></span>
+                                        </div>
+                                        <div class="tooltip-details">
+                                            <div class="tooltip-stat">
+                                                <span class="tooltip-label">Social:</span>
+                                                <span class="tooltip-value social-value"></span>
+                                            </div>
+                                            <div class="tooltip-stat">
+                                                <span class="tooltip-label">Economic:</span>
+                                                <span class="tooltip-value economic-value"></span>
+                                            </div>
+                                            <div class="tooltip-status">
+                                                <span class="tooltip-coalition"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="compass-legend">
+                                <h4>Party Legend</h4>
+                                <div class="legend-items" id="compassLegend">
+                                    <!-- Legend items will be generated here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Political Assembly Visualization -->
+                    <div class="assembly-section">
+                        <div class="assembly-header">
+                            <h3><i class="fas fa-users"></i> Political Assembly</h3>
+                            <p>Parliamentary representation organized by economic position</p>
+                        </div>
+                        
+                        <div class="assembly-content">
+                            <div class="assembly-summary">
+                                <div class="assembly-stats">
+                                    <div class="assembly-stat">
+                                        <span class="stat-label">Coalition</span>
+                                        <span class="stat-value" id="assemblyCoalitionTotal">0%</span>
+                                    </div>
+                                    <div class="assembly-stat">
+                                        <span class="stat-label">Opposition</span>
+                                        <span class="stat-value" id="assemblyOppositionTotal">0%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="assembly-chart">
+                                <svg id="assemblySVG" width="600" height="400" viewBox="0 0 600 400">
+                                    <!-- Assembly visualization will be generated here -->
+                                </svg>
+                            </div>
+                            
+                            <div class="assembly-legend">
+                                <div class="legend-item">
+                                    <div class="legend-color coalition-color"></div>
+                                    <span>Coalition Parties</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-color opposition-color"></div>
+                                    <span>Opposition Parties</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-color player-party-color"></div>
+                                    <span>Your Party</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Budget Meeting Screen -->
+            <div id="budgetScreen" class="screen">
+                <div class="budget-container">
+                    <div class="budget-header">
+                        <div class="budget-title">
+                            <h2><i class="fas fa-coins"></i> Yearly Budget Meeting</h2>
+                            <p>Allocate government spending across different sectors</p>
+                        </div>
+                        <div class="budget-info">
+                            <div class="budget-rules" id="budgetRules">
+                                <!-- Budget rules will be displayed here -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="budget-overview">
+                        <div class="budget-summary">
+                            <div class="budget-total-card">
+                                <div class="total-label">Total Budget</div>
+                                <div class="total-value" id="totalBudget">100%</div>
+                                <div class="total-status" id="budgetStatus">Balanced</div>
+                            </div>
+                            <div class="budget-controls-overview">
+                                <div class="control-info">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span>Adjust spending by ±5% per sector</span>
+                                </div>
+                                <div class="budget-actions">
+                                    <button class="btn btn-success" onclick="finalizeBudget()">
+                                        <i class="fas fa-check"></i> Finalize Budget
+                                    </button>
+                                    <button class="btn btn-warning" onclick="resetBudget()">
+                                        <i class="fas fa-undo"></i> Reset to Original
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="budget-subjects-container">
+                        <div class="subjects-header">
+                            <h3><i class="fas fa-list"></i> Budget Allocation</h3>
+                            <div class="subjects-summary">
+                                <span class="summary-item">
+                                    <i class="fas fa-chart-pie"></i>
+                                    <span id="subjectsCount">10</span> Sectors
+                                </span>
+                                <span class="summary-item">
+                                    <i class="fas fa-percentage"></i>
+                                    <span id="averageSpending">10</span>% Average
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="budget-subjects" id="budgetSubjects">
+                            <!-- Budget subjects will be generated here -->
+                        </div>
+                    </div>
+                    
+                    <div class="budget-footer">
+                        <div class="budget-tips">
+                            <h4><i class="fas fa-lightbulb"></i> Budget Tips</h4>
+                            <ul id="budgetTips">
+                                <!-- Tips will be generated here -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Automatic Budget Meeting Screen -->
+            <div id="automaticBudgetScreen" class="screen">
+                <div class="automatic-budget-container">
+                    <div class="automatic-budget-header">
+                        <div class="automatic-budget-title">
+                            <h2><i class="fas fa-robot"></i> Automatic Budget Meeting</h2>
+                            <p>The coalition has automatically allocated the budget based on their ideology</p>
+                        </div>
+                        <button class="btn btn-primary" onclick="game.proceedAfterAutomaticBudget()">
+                            Continue <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="automatic-budget-content">
+                        <div class="coalition-analysis">
+                            <h3><i class="fas fa-chart-pie"></i> Coalition Analysis</h3>
+                            <div class="analysis-cards">
+                                <div class="analysis-card">
+                                    <div class="analysis-icon economic">
+                                        <i class="fas fa-balance-scale"></i>
+                                    </div>
+                                    <div class="analysis-info">
+                                        <div class="analysis-label">Economic Policy</div>
+                                        <div class="analysis-value" id="economicPolicy">-</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="analysis-card">
+                                    <div class="analysis-icon social">
+                                        <i class="fas fa-users"></i>
+                                    </div>
+                                    <div class="analysis-info">
+                                        <div class="analysis-label">Social Policy</div>
+                                        <div class="analysis-value" id="socialPolicy">-</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="budget-changes">
+                            <h3><i class="fas fa-exchange-alt"></i> Budget Changes</h3>
+                            <div class="changes-container">
+                                <div class="changes-section">
+                                    <h4 id="changesSectionTitle">Economic Changes</h4>
+                                    <div id="economicChanges" class="changes-list">
+                                        <!-- Economic changes will be generated here -->
+                                    </div>
+                                </div>
+                                
+                                <div class="changes-section">
+                                    <h4 id="socialChangesTitle">Social Changes</h4>
+                                    <div id="socialChanges" class="changes-list">
+                                        <!-- Social changes will be generated here -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="budget-summary">
+                            <h3><i class="fas fa-calculator"></i> Budget Summary</h3>
+                            <div class="summary-cards">
+                                <div class="summary-card">
+                                    <div class="summary-icon">
+                                        <i class="fas fa-chart-line"></i>
+                                    </div>
+                                    <div class="summary-info">
+                                        <div class="summary-label">Total Budget</div>
+                                        <div class="summary-value" id="newTotalBudget">0%</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="summary-card">
+                                    <div class="summary-icon">
+                                        <i class="fas fa-percentage"></i>
+                                    </div>
+                                    <div class="summary-info">
+                                        <div class="summary-label">Tax Rate</div>
+                                        <div class="summary-value" id="newTaxRate">0%</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistics Screen -->
+            <div id="statisticsScreen" class="screen">
+                <div class="statistics-container">
+                    <div class="statistics-header">
+                        <div class="statistics-title">
+                            <h2><i class="fas fa-chart-bar"></i> National Statistics</h2>
+                            <p>Key demographic and economic indicators for the nation</p>
+                        </div>
+                    </div>
+                    
+                    <div class="statistics-content">
+                   <!-- Social Statistics -->
+                   <div class="statistics-section">
+                       <h3><i class="fas fa-users"></i> Social Statistics</h3>
+                       <div class="stats-grid">
+                           <div class="stat-card">
+                               <div class="stat-icon">
+                                   <i class="fas fa-globe"></i>
+                               </div>
+                               <div class="stat-info">
+                                   <div class="stat-label">Total Population</div>
+                                   <div class="stat-value" id="totalPopulation">-</div>
+                                   <div class="stat-detail">National Census</div>
+                               </div>
+                           </div>
+                           
+                           <div class="stat-card">
+                               <div class="stat-icon">
+                                   <i class="fas fa-home"></i>
+                               </div>
+                               <div class="stat-info">
+                                   <div class="stat-label">Homelessness Rate</div>
+                                   <div class="stat-value" id="homelessnessRate">-</div>
+                                   <div class="stat-detail" id="homelessnessCount">-</div>
+                               </div>
+                           </div>
+                           
+                           <div class="stat-card">
+                               <div class="stat-icon">
+                                   <i class="fas fa-passport"></i>
+                               </div>
+                               <div class="stat-info">
+                                   <div class="stat-label">Immigration Rate</div>
+                                   <div class="stat-value" id="immigrationRate">-</div>
+                                   <div class="stat-detail" id="immigrationCount">-</div>
+                               </div>
+                           </div>
+                       </div>
+                   </div>
+                        
+                   <!-- Economic Statistics -->
+                   <div class="statistics-section">
+                       <h3><i class="fas fa-dollar-sign"></i> Economic Statistics</h3>
+                       <div class="stats-grid">
+                           <div class="stat-card">
+                               <div class="stat-icon">
+                                   <i class="fas fa-balance-scale"></i>
+                               </div>
+                               <div class="stat-info">
+                                   <div class="stat-label">Wealth Inequality</div>
+                                   <div class="stat-value" id="wealthInequality">-</div>
+                                   <div class="stat-detail">Richest 5% vs Poorest 5%</div>
+                               </div>
+                           </div>
+                           
+                           <div class="stat-card">
+                               <div class="stat-icon">
+                                   <i class="fas fa-briefcase"></i>
+                               </div>
+                               <div class="stat-info">
+                                   <div class="stat-label">Unemployment Rate</div>
+                                   <div class="stat-value" id="unemploymentRate">-</div>
+                                   <div class="stat-detail" id="unemploymentCount">-</div>
+                               </div>
+                           </div>
+                           
+                           <!-- Unemployment Breakdown -->
+                           <div class="unemployment-breakdown" id="unemploymentBreakdown" style="display: none;">
+                               <h4><i class="fas fa-chart-pie"></i> Reasons for Unemployment</h4>
+                               <div class="breakdown-chart">
+                                   <div class="breakdown-item">
+                                       <div class="breakdown-label">No Available Jobs in Sector</div>
+                                       <div class="breakdown-bar">
+                                           <div class="breakdown-fill" id="noAvailableJobsBar"></div>
+                                       </div>
+                                       <div class="breakdown-percentage" id="noAvailableJobsPercentage">-</div>
+                                   </div>
+                                   
+                                   <div class="breakdown-item">
+                                       <div class="breakdown-label">Physical Handicap</div>
+                                       <div class="breakdown-bar">
+                                           <div class="breakdown-fill" id="physicalHandicapBar"></div>
+                                       </div>
+                                       <div class="breakdown-percentage" id="physicalHandicapPercentage">-</div>
+                                   </div>
+                                   
+                                   <div class="breakdown-item">
+                                       <div class="breakdown-label">Mental Health Issues</div>
+                                       <div class="breakdown-bar">
+                                           <div class="breakdown-fill" id="mentalHealthBar"></div>
+                                       </div>
+                                       <div class="breakdown-percentage" id="mentalHealthPercentage">-</div>
+                                   </div>
+                                   
+                                   <div class="breakdown-item">
+                                       <div class="breakdown-label">Lack of Required Skills</div>
+                                       <div class="breakdown-bar">
+                                           <div class="breakdown-fill" id="lackOfSkillsBar"></div>
+                                       </div>
+                                       <div class="breakdown-percentage" id="lackOfSkillsPercentage">-</div>
+                                   </div>
+                                   
+                                   <div class="breakdown-item">
+                                       <div class="breakdown-label">Age Discrimination</div>
+                                       <div class="breakdown-bar">
+                                           <div class="breakdown-fill" id="ageDiscriminationBar"></div>
+                                       </div>
+                                       <div class="breakdown-percentage" id="ageDiscriminationPercentage">-</div>
+                                   </div>
+                                   
+                                   <div class="breakdown-item">
+                                       <div class="breakdown-label">Seasonal Work</div>
+                                       <div class="breakdown-bar">
+                                           <div class="breakdown-fill" id="seasonalWorkBar"></div>
+                                       </div>
+                                       <div class="breakdown-percentage" id="seasonalWorkPercentage">-</div>
+                                   </div>
+                                   
+                                   <div class="breakdown-item">
+                                       <div class="breakdown-label">Company Closure</div>
+                                       <div class="breakdown-bar">
+                                           <div class="breakdown-fill" id="companyClosureBar"></div>
+                                       </div>
+                                       <div class="breakdown-percentage" id="companyClosurePercentage">-</div>
+                                   </div>
+                               </div>
+                           </div>
+                           
+                           <div class="stat-card">
+                               <div class="stat-icon">
+                                   <i class="fas fa-briefcase"></i>
+                               </div>
+                               <div class="stat-info">
+                                   <div class="stat-label">Available Jobs</div>
+                                   <div class="stat-value" id="availableJobs">-</div>
+                                   <div class="stat-detail" id="availableJobsCount">-</div>
+                               </div>
+                           </div>
+                           
+                           <div class="stat-card">
+                               <div class="stat-icon">
+                                   <i class="fas fa-user-md"></i>
+                               </div>
+                               <div class="stat-info">
+                                   <div class="stat-label">Access to Healthcare</div>
+                                   <div class="stat-value" id="accessToHealthcare">-</div>
+                                   <div class="stat-detail">Population Coverage</div>
+                               </div>
+                           </div>
+                           
+                           <div class="stat-card">
+                               <div class="stat-icon">
+                                   <i class="fas fa-heartbeat"></i>
+                               </div>
+                               <div class="stat-info">
+                                   <div class="stat-label">Healthcare Index</div>
+                                   <div class="stat-value" id="healthcareIndex">-</div>
+                                   <div class="stat-detail">Quality Score (0-1)</div>
+                               </div>
+                           </div>
+                           
+                           <div class="stat-card">
+                               <div class="stat-icon">
+                                   <i class="fas fa-smile"></i>
+                               </div>
+                               <div class="stat-info">
+                                   <div class="stat-label">Happiness</div>
+                                   <div class="stat-value" id="happiness">-</div>
+                                   <div class="stat-detail" id="happinessIndex">-</div>
+                               </div>
+                           </div>
+                           
+                           <div class="stat-card">
+                               <div class="stat-icon">
+                                   <i class="fas fa-leaf"></i>
+                               </div>
+                               <div class="stat-info">
+                                   <div class="stat-label">Environmental Quality</div>
+                                   <div class="stat-value" id="environmentalQuality">-</div>
+                                   <div class="stat-detail" id="environmentIndex">-</div>
+                               </div>
+                           </div>
+                           
+                           <div class="stat-card">
+                               <div class="stat-icon">
+                                   <i class="fas fa-chart-line"></i>
+                               </div>
+                               <div class="stat-info">
+                                   <div class="stat-label">GDP</div>
+                                   <div class="stat-value" id="gdp">-</div>
+                                   <div class="stat-detail">Total Economic Output</div>
+                               </div>
+                           </div>
+                           
+                           <div class="stat-card">
+                               <div class="stat-icon">
+                                   <i class="fas fa-user-dollar"></i>
+                               </div>
+                               <div class="stat-info">
+                                   <div class="stat-label">GDP per Capita</div>
+                                   <div class="stat-value" id="gdpPerCapita">-</div>
+                                   <div class="stat-detail">Economic Output per Person</div>
+                               </div>
+                           </div>
+                       </div>
+                   </div>
+                        
+                        <!-- Education Statistics -->
+                        <div class="statistics-section">
+                            <h3><i class="fas fa-graduation-cap"></i> Education Statistics</h3>
+                            <div class="education-chart">
+                                <div class="education-item">
+                                    <div class="education-label">PhD</div>
+                                    <div class="education-bar">
+                                        <div class="education-fill" id="phdBar"></div>
+                                    </div>
+                                    <div class="education-percentage" id="phdPercentage">-</div>
+                                </div>
+                                
+                                <div class="education-item">
+                                    <div class="education-label">Master's</div>
+                                    <div class="education-bar">
+                                        <div class="education-fill" id="mastersBar"></div>
+                                    </div>
+                                    <div class="education-percentage" id="mastersPercentage">-</div>
+                                </div>
+                                
+                                <div class="education-item">
+                                    <div class="education-label">Bachelor's</div>
+                                    <div class="education-bar">
+                                        <div class="education-fill" id="bachelorsBar"></div>
+                                    </div>
+                                    <div class="education-percentage" id="bachelorsPercentage">-</div>
+                                </div>
+                                
+                                <div class="education-item">
+                                    <div class="education-label">High School</div>
+                                    <div class="education-bar">
+                                        <div class="education-fill" id="highSchoolBar"></div>
+                                    </div>
+                                    <div class="education-percentage" id="highSchoolPercentage">-</div>
+                                </div>
+                                
+                                <div class="education-item">
+                                    <div class="education-label">Middle School</div>
+                                    <div class="education-bar">
+                                        <div class="education-fill" id="middleSchoolBar"></div>
+                                    </div>
+                                    <div class="education-percentage" id="middleSchoolPercentage">-</div>
+                                </div>
+                                
+                                <div class="education-item">
+                                    <div class="education-label">Elementary</div>
+                                    <div class="education-bar">
+                                        <div class="education-fill" id="elementaryBar"></div>
+                                    </div>
+                                    <div class="education-percentage" id="elementaryPercentage">-</div>
+                                </div>
+                                
+                                <div class="education-item">
+                                    <div class="education-label">No School</div>
+                                    <div class="education-bar">
+                                        <div class="education-fill" id="noSchoolBar"></div>
+                                    </div>
+                                    <div class="education-percentage" id="noSchoolPercentage">-</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Voter Issues Screen -->
+            <div id="voterIssuesScreen" class="screen">
+                <div class="voter-issues-container">
+                    <div class="voter-issues-header">
+                        <div class="voter-issues-title">
+                            <h2><i class="fas fa-poll"></i> Voter Priorities</h2>
+                            <p>What matters most to the electorate this election cycle</p>
+                        </div>
+                    </div>
+                    
+                    <div class="voter-issues-content">
+                        <div class="issues-overview">
+                            <h3><i class="fas fa-chart-bar"></i> Top Voter Concerns</h3>
+                            <div class="issues-grid" id="issuesGrid">
+                                <!-- Issues will be generated here -->
+                            </div>
+                        </div>
+                        
+                        <div class="issues-analysis">
+                            <h3><i class="fas fa-brain"></i> Political Analysis</h3>
+                            <div class="analysis-content" id="issuesAnalysis">
+                                <!-- Analysis will be generated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Daily Event Screen -->
+            <div id="eventScreen" class="screen">
+                <div class="event-container">
+                    <div class="event-header">
+                        <div class="event-title">
+                            <h2><i class="fas fa-calendar-day"></i> Daily Event</h2>
+                            <p>Day <span id="eventDay">1</span> - A new challenge has emerged</p>
+                        </div>
+                    </div>
+                    
+                    <div class="event-content">
+                        <div class="event-description">
+                            <h3 id="eventTitle">Event Title</h3>
+                            <p id="eventDescription">
+                                Event description will be loaded dynamically.
+                            </p>
+                        </div>
+                        
+                   <div class="event-options">
+                       <h4>Parliament will vote on these options:</h4>
+                            <div class="options-grid">
+                                <!-- Options will be generated dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Voting Results Screen -->
+            <div id="votingResultsScreen" class="screen">
+                <div class="voting-results-container">
+                    <div class="voting-results-header">
+                        <div class="voting-results-title">
+                            <h2><i class="fas fa-vote-yea"></i> Voting Results</h2>
+                            <p>How all parties voted on the current issue</p>
+                        </div>
+                        <button class="btn btn-primary" onclick="game.proceedToSecurity()">
+                            Continue <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="voting-results-content">
+                        <div class="voting-summary">
+                            <h3><i class="fas fa-chart-pie"></i> Vote Summary</h3>
+                            <div class="summary-cards">
+                                <div class="summary-card" id="chosenOptionCard">
+                                    <div class="summary-icon">
+                                        <i class="fas fa-check-circle"></i>
+                                    </div>
+                                    <div class="summary-info">
+                                        <div class="summary-label">Chosen Option</div>
+                                        <div class="summary-value" id="chosenOption">-</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="summary-card">
+                                    <div class="summary-icon">
+                                        <i class="fas fa-users"></i>
+                                    </div>
+                                    <div class="summary-info">
+                                        <div class="summary-label">Total Support</div>
+                                        <div class="summary-value" id="coalitionSupport">-</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="party-votes">
+                            <h3><i class="fas fa-list"></i> Party Votes</h3>
+                            <div class="votes-list" id="votesList">
+                                <!-- Party votes will be generated here -->
+                            </div>
+                        </div>
+                        
+                        <div class="voting-analysis">
+                            <h3><i class="fas fa-brain"></i> Analysis</h3>
+                            <div class="analysis-content" id="votingAnalysis">
+                                <!-- Analysis will be generated here -->
+                            </div>
+                        </div>
+                        
+                        <!-- New Effects Section -->
+                        <div class="effects-section" id="effectsSection" style="display: none;">
+                            <h3><i class="fas fa-chart-line"></i> Policy Effects</h3>
+                            <div class="effects-grid" id="effectsGrid">
+                                <!-- Effects will be displayed here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- News Screen -->
+            <div id="newsScreen" class="screen">
+                <div class="statistics-container">
+                    <div class="statistics-header">
+                        <div class="statistics-title">
+                            <h2><i class="fas fa-newspaper"></i> National News</h2>
+                            <p>Latest headlines on votes and economic-social trends</p>
+                        </div>
+                    </div>
+                    <div class="statistics-content">
+                        <div id="newsList" class="news-list"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Coalition Security Screen -->
+            <div id="securityScreen" class="screen">
+                <div class="security-container">
+                    <div class="security-header">
+                        <div class="security-title">
+                            <h2><i class="fas fa-shield-alt"></i> Coalition Security Analysis</h2>
+                            <p>Analyze the stability and ideological alignment of your coalition</p>
+                        </div>
+                        <button class="btn btn-primary" onclick="showGameScreen()">
+                            Continue <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="security-content">
+                        <div class="security-overview">
+                            <div class="security-score">
+                                <h3><i class="fas fa-chart-line"></i> Security Level</h3>
+                                <div class="score-display">
+                                    <span class="score-value" id="securityScore">0%</span>
+                                </div>
+                            </div>
+                            <div class="security-analysis" id="securityAnalysis">
+                                <!-- Security analysis will be displayed here -->
+                            </div>
+                        </div>
+                        
+                        <div class="coalition-visualization">
+                            <h3><i class="fas fa-chart-scatter"></i> Coalition Ideological Positions</h3>
+                            <div class="ideology-charts">
+                                <div class="ideology-chart">
+                                    <h4>Economic Axis (Left ↔ Right)</h4>
+                                    <div class="axis-container">
+                                        <div class="axis-line" id="economicAxis">
+                                            <div class="axis-label left">Left</div>
+                                            <div class="axis-label right">Right</div>
+                                            <!-- Party positions will be generated here -->
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="ideology-chart">
+                                    <h4>Social Axis (Progressive ↔ Conservative)</h4>
+                                    <div class="axis-container">
+                                        <div class="axis-line" id="socialAxis">
+                                            <div class="axis-label left">Progressive</div>
+                                            <div class="axis-label right">Conservative</div>
+                                            <!-- Party positions will be generated here -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="coalition-details" id="coalitionDetails">
+                            <!-- Coalition details will be displayed here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Statistics History Modal -->
+    <div id="statisticsHistoryModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="historyModalTitle">Statistics History</h2>
+                <span class="close" onclick="closeStatisticsHistory()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="history-chart-container">
+                    <canvas id="historyChart" width="800" height="400"></canvas>
+                </div>
+                <div class="history-details">
+                    <div class="history-summary" id="historySummary"></div>
+                </div>
+                <!-- Unemployment Breakdown (only shown for unemployment) -->
+                <div id="modalUnemploymentBreakdown" class="modal-unemployment-breakdown" style="display: none;">
+                    <h3><i class="fas fa-chart-pie"></i> Reasons for Unemployment</h3>
+                    <div class="breakdown-chart">
+                        <div class="breakdown-item">
+                            <div class="breakdown-label">No Available Jobs in Sector</div>
+                            <div class="breakdown-bar">
+                                <div class="breakdown-fill" id="modalNoAvailableJobsBar"></div>
+                            </div>
+                            <div class="breakdown-percentage" id="modalNoAvailableJobsPercentage">-</div>
+                        </div>
+                        
+                        <div class="breakdown-item">
+                            <div class="breakdown-label">Physical Handicap</div>
+                            <div class="breakdown-bar">
+                                <div class="breakdown-fill" id="modalPhysicalHandicapBar"></div>
+                            </div>
+                            <div class="breakdown-percentage" id="modalPhysicalHandicapPercentage">-</div>
+                        </div>
+                        
+                        <div class="breakdown-item">
+                            <div class="breakdown-label">Mental Health Issues</div>
+                            <div class="breakdown-bar">
+                                <div class="breakdown-fill" id="modalMentalHealthBar"></div>
+                            </div>
+                            <div class="breakdown-percentage" id="modalMentalHealthPercentage">-</div>
+                        </div>
+                        
+                        <div class="breakdown-item">
+                            <div class="breakdown-label">Lack of Required Skills</div>
+                            <div class="breakdown-bar">
+                                <div class="breakdown-fill" id="modalLackOfSkillsBar"></div>
+                            </div>
+                            <div class="breakdown-percentage" id="modalLackOfSkillsPercentage">-</div>
+                        </div>
+                        
+                        <div class="breakdown-item">
+                            <div class="breakdown-label">Age Discrimination</div>
+                            <div class="breakdown-bar">
+                                <div class="breakdown-fill" id="modalAgeDiscriminationBar"></div>
+                            </div>
+                            <div class="breakdown-percentage" id="modalAgeDiscriminationPercentage">-</div>
+                        </div>
+                        
+                        <div class="breakdown-item">
+                            <div class="breakdown-label">Seasonal Work</div>
+                            <div class="breakdown-bar">
+                                <div class="breakdown-fill" id="modalSeasonalWorkBar"></div>
+                            </div>
+                            <div class="breakdown-percentage" id="modalSeasonalWorkPercentage">-</div>
+                        </div>
+                        
+                        <div class="breakdown-item">
+                            <div class="breakdown-label">Company Closure</div>
+                            <div class="breakdown-bar">
+                                <div class="breakdown-fill" id="modalCompanyClosureBar"></div>
+                            </div>
+                            <div class="breakdown-percentage" id="modalCompanyClosurePercentage">-</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Available Jobs Sector Breakdown (only shown for available jobs) -->
+                <div id="modalAvailableJobsBreakdown" class="modal-available-jobs-breakdown" style="display: none;">
+                    <h3><i class="fas fa-industry"></i> Available Jobs by Sector</h3>
+                    <div class="breakdown-chart">
+                        <div class="breakdown-item">
+                            <div class="breakdown-label">Healthcare</div>
+                            <div class="breakdown-bar">
+                                <div class="breakdown-fill" id="modalHealthcareBar"></div>
+                            </div>
+                            <div class="breakdown-percentage" id="modalHealthcarePercentage">-</div>
+                        </div>
+                        
+                        <div class="breakdown-item">
+                            <div class="breakdown-label">Technology</div>
+                            <div class="breakdown-bar">
+                                <div class="breakdown-fill" id="modalTechnologyBar"></div>
+                            </div>
+                            <div class="breakdown-percentage" id="modalTechnologyPercentage">-</div>
+                        </div>
+                        
+                        <div class="breakdown-item">
+                            <div class="breakdown-label">Education</div>
+                            <div class="breakdown-bar">
+                                <div class="breakdown-fill" id="modalEducationBar"></div>
+                            </div>
+                            <div class="breakdown-percentage" id="modalEducationPercentage">-</div>
+                        </div>
+                        
+                        <div class="breakdown-item">
+                            <div class="breakdown-label">Construction</div>
+                            <div class="breakdown-bar">
+                                <div class="breakdown-fill" id="modalConstructionBar"></div>
+                            </div>
+                            <div class="breakdown-percentage" id="modalConstructionPercentage">-</div>
+                        </div>
+                        
+                        <div class="breakdown-item">
+                            <div class="breakdown-label">Retail</div>
+                            <div class="breakdown-bar">
+                                <div class="breakdown-fill" id="modalRetailBar"></div>
+                            </div>
+                            <div class="breakdown-percentage" id="modalRetailPercentage">-</div>
+                        </div>
+                        
+                        <div class="breakdown-item">
+                            <div class="breakdown-label">Manufacturing</div>
+                            <div class="breakdown-bar">
+                                <div class="breakdown-fill" id="modalManufacturingBar"></div>
+                            </div>
+                            <div class="breakdown-percentage" id="modalManufacturingPercentage">-</div>
+                        </div>
+                        
+                        <div class="breakdown-item">
+                            <div class="breakdown-label">Hospitality</div>
+                            <div class="breakdown-bar">
+                                <div class="breakdown-fill" id="modalHospitalityBar"></div>
+                            </div>
+                            <div class="breakdown-percentage" id="modalHospitalityPercentage">-</div>
+                        </div>
+                        
+                        <div class="breakdown-item">
+                            <div class="breakdown-label">Finance</div>
+                            <div class="breakdown-bar">
+                                <div class="breakdown-fill" id="modalFinanceBar"></div>
+                            </div>
+                            <div class="breakdown-percentage" id="modalFinancePercentage">-</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Homelessness Breakdown (only shown for homelessness) -->
+                <div id="modalHomelessnessBreakdown" class="modal-homelessness-breakdown" style="display: none;">
+                    <h3><i class="fas fa-home"></i> Reasons for Homelessness</h3>
+                    <div class="breakdown-chart">
+                        <div class="breakdown-item">
+                            <div class="breakdown-label">Economic Hardship</div>
+                            <div class="breakdown-bar">
+                                <div class="breakdown-fill" id="modalEconomicHardshipBar"></div>
+                            </div>
+                            <div class="breakdown-percentage" id="modalEconomicHardshipPercentage">-</div>
+                        </div>
+                        
+                        <div class="breakdown-item">
+                            <div class="breakdown-label">Mental Health Issues</div>
+                            <div class="breakdown-bar">
+                                <div class="breakdown-fill" id="modalMentalHealthBar"></div>
+                            </div>
+                            <div class="breakdown-percentage" id="modalMentalHealthPercentage">-</div>
+                        </div>
+                        
+                        <div class="breakdown-item">
+                            <div class="breakdown-label">Substance Abuse</div>
+                            <div class="breakdown-bar">
+                                <div class="breakdown-fill" id="modalSubstanceAbuseBar"></div>
+                            </div>
+                            <div class="breakdown-percentage" id="modalSubstanceAbusePercentage">-</div>
+                        </div>
+                        
+                        <div class="breakdown-item">
+                            <div class="breakdown-label">Domestic Violence</div>
+                            <div class="breakdown-bar">
+                                <div class="breakdown-fill" id="modalDomesticViolenceBar"></div>
+                            </div>
+                            <div class="breakdown-percentage" id="modalDomesticViolencePercentage">-</div>
+                        </div>
+                        
+                        <div class="breakdown-item">
+                            <div class="breakdown-label">Family Breakdown</div>
+                            <div class="breakdown-bar">
+                                <div class="breakdown-fill" id="modalFamilyBreakdownBar"></div>
+                            </div>
+                            <div class="breakdown-percentage" id="modalFamilyBreakdownPercentage">-</div>
+                        </div>
+                        
+                        <div class="breakdown-item">
+                            <div class="breakdown-label">Eviction</div>
+                            <div class="breakdown-bar">
+                                <div class="breakdown-fill" id="modalEvictionBar"></div>
+                            </div>
+                            <div class="breakdown-percentage" id="modalEvictionPercentage">-</div>
+                        </div>
+                        
+                        <div class="breakdown-item">
+                            <div class="breakdown-label">Youth Runaway</div>
+                            <div class="breakdown-bar">
+                                <div class="breakdown-fill" id="modalYouthRunawayBar"></div>
+                            </div>
+                            <div class="breakdown-percentage" id="modalYouthRunawayPercentage">-</div>
+                        </div>
+                        
+                        <div class="breakdown-item">
+                            <div class="breakdown-label">Disability</div>
+                            <div class="breakdown-bar">
+                                <div class="breakdown-fill" id="modalDisabilityBar"></div>
+                            </div>
+                            <div class="breakdown-percentage" id="modalDisabilityPercentage">-</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Save Menu Screen -->
+    <div id="saveMenuScreen" class="screen">
+        <div class="save-menu-container">
+            <div class="save-menu-header">
+                <div class="save-menu-title">
+                    <h2><i class="fas fa-save"></i> Save Game</h2>
+                    <p>Choose a slot to save your game</p>
+                </div>
+                <button class="btn btn-primary" onclick="showGameScreen()">
+                    Back to Game <i class="fas fa-arrow-left"></i>
+                </button>
+            </div>
+            
+            <div class="save-slots-grid" id="saveSlotsContainer">
+                <!-- Save slots will be rendered here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Load Menu Screen -->
+    <div id="loadMenuScreen" class="screen">
+        <div class="load-menu-container">
+            <div class="load-menu-header">
+                <div class="load-menu-title">
+                    <h2><i class="fas fa-folder-open"></i> Load Game</h2>
+                    <p>Choose a save slot to load from</p>
+                </div>
+                <button class="btn btn-primary" onclick="showGameScreen()">
+                    Back to Game <i class="fas fa-arrow-left"></i>
+                </button>
+            </div>
+            
+            <div class="load-slots-grid" id="loadSlotsContainer">
+                <!-- Load slots will be rendered here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Players Screen -->
+    <div id="playersScreen" class="screen">
+        <div class="players-container">
+            <div class="players-header">
+                <div class="players-title">
+                    <h2><i class="fas fa-users"></i> Players</h2>
+                    <p>Manage and view player information</p>
+                </div>
+                <button class="btn btn-primary" onclick="showGameScreen()">
+                    Back to Game <i class="fas fa-arrow-left"></i>
+                </button>
+            </div>
+            
+            <div class="players-content">
+                <div class="players-placeholder">
+                    <div class="placeholder-content">
+                        <i class="fas fa-users fa-3x"></i>
+                        <h3>Players Section</h3>
+                        <p>This section will be implemented in the future.</p>
+                        <p>Here you'll be able to manage player profiles, statistics, and more.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

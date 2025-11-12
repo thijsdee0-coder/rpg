@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event System Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .event-test {
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .event-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .event-description {
+            margin-bottom: 20px;
+            color: #666;
+        }
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .option-card {
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .option-card:hover {
+            background-color: #f5f5f5;
+        }
+        .option-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        .option-description {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        .option-effects {
+            font-size: 12px;
+            color: #888;
+        }
+        .effect {
+            display: block;
+            margin: 2px 0;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .test-results {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Event System Test</h1>
+    
+    <div class="test-results">
+        <h3>Test Results</h3>
+        <div id="testResults">Loading...</div>
+    </div>
+    
+    <button onclick="testRandomEvent()">Test Random Event</button>
+    <button onclick="testAllEvents()">Test All Events</button>
+    
+    <div id="eventDisplay"></div>
+
+    <script>
+        // Simplified event system for testing
+        class EventSystemTest {
+            constructor() {
+                this.eventDefinitions = {
+                    'housing_crisis': {
+                        id: 'housing_crisis',
+                        title: 'Housing Crisis',
+                        description: 'The country is facing a severe housing shortage. Young families cannot find affordable homes, and homelessness is on the rise. The coalition must decide how to address this crisis.',
+                        options: {
+                            'conservative-right': {
+                                title: 'Market Solutions',
+                                description: 'Reduce regulations and let the free market solve the housing crisis through private development.',
+                                icon: 'fas fa-home',
+                                effects: {
+                                    gdpChange: { min: 0.10, max: 0.20 },
+                                    wealthInequalityChange: { min: 0.15, max: 0.25 },
+                                    homelessnessChange: { min: 0.00, max: 0.10 }
+                                },
+                                messages: ['GDP increased significantly', 'Wealth inequality increased', 'Homelessness remained stable']
+                            },
+                            'conservative-left': {
+                                title: 'Public Housing',
+                                description: 'Invest heavily in government-built social housing to provide affordable homes for families.',
+                                icon: 'fas fa-hammer',
+                                effects: {
+                                    homelessnessChange: { min: -0.50, max: -0.30 },
+                                    gdpChange: { min: -0.20, max: -0.10 },
+                                    unemploymentChange: { min: 0.05, max: 0.15 }
+                                },
+                                messages: ['Homelessness decreased significantly', 'GDP decreased substantially', 'Government spending increased']
+                            },
+                            'progressive-right': {
+                                title: 'Innovation & Incentives',
+                                description: 'Create tax incentives for sustainable housing development and modern construction methods.',
+                                icon: 'fas fa-chart-line',
+                                effects: {
+                                    unemploymentChange: { min: -0.25, max: -0.15 },
+                                    gdpChange: { min: -0.08, max: -0.03 },
+                                    homelessnessChange: { min: -0.15, max: -0.05 }
+                                },
+                                messages: ['Unemployment decreased', 'GDP decreased slightly', 'Modern housing solutions implemented']
+                            },
+                            'progressive-left': {
+                                title: 'Community Solutions',
+                                description: 'Support cooperative housing and community land trusts to create affordable, community-owned homes.',
+                                icon: 'fas fa-users',
+                                effects: {
+                                    homelessnessChange: { min: -0.08, max: -0.02 },
+                                    unemploymentChange: { min: -0.04, max: -0.01 }
+                                },
+                                messages: ['Minimal economic impact', 'Community empowerment increased', 'Grassroots solutions implemented']
+                            }
+                        }
+                    },
+                    'economic_recession': {
+                        id: 'economic_recession',
+                        title: 'Economic Recession',
+                        description: 'The economy has entered a recession with rising unemployment and declining GDP. The government must take action to stimulate economic recovery.',
+                        options: {
+                            'conservative-right': {
+                                title: 'Tax Cuts & Deregulation',
+                                description: 'Reduce taxes and regulations to encourage business investment and economic growth.',
+                                icon: 'fas fa-chart-line',
+                                effects: {
+                                    gdpChange: { min: 0.05, max: 0.15 },
+                                    unemploymentChange: { min: -0.10, max: -0.05 },
+                                    wealthInequalityChange: { min: 0.10, max: 0.20 }
+                                },
+                                messages: ['Business investment increased', 'Tax revenue decreased', 'Economic growth stimulated']
+                            },
+                            'conservative-left': {
+                                title: 'Infrastructure Investment',
+                                description: 'Launch massive public works programs to create jobs and improve national infrastructure.',
+                                icon: 'fas fa-road',
+                                effects: {
+                                    unemploymentChange: { min: -0.20, max: -0.10 },
+                                    gdpChange: { min: 0.02, max: 0.08 },
+                                    homelessnessChange: { min: -0.05, max: 0.00 }
+                                },
+                                messages: ['Unemployment decreased significantly', 'Infrastructure improved', 'Public debt increased']
+                            },
+                            'progressive-right': {
+                                title: 'Innovation Stimulus',
+                                description: 'Invest in research and development, green technology, and digital infrastructure.',
+                                icon: 'fas fa-lightbulb',
+                                effects: {
+                                    gdpChange: { min: 0.03, max: 0.10 },
+                                    unemploymentChange: { min: -0.15, max: -0.08 },
+                                    wealthInequalityChange: { min: -0.05, max: 0.05 }
+                                },
+                                messages: ['Innovation sector grew', 'Green jobs created', 'Future competitiveness improved']
+                            },
+                            'progressive-left': {
+                                title: 'Social Safety Net',
+                                description: 'Expand unemployment benefits, healthcare access, and social programs to support affected citizens.',
+                                icon: 'fas fa-heart',
+                                effects: {
+                                    unemploymentChange: { min: -0.05, max: 0.00 },
+                                    homelessnessChange: { min: -0.10, max: -0.02 },
+                                    gdpChange: { min: -0.05, max: 0.02 }
+                                },
+                                messages: ['Social support strengthened', 'Poverty reduced', 'Government spending increased']
+                            }
+                        }
+                    }
+                };
+                
+                this.currentEvent = null;
+                this.runInitialTest();
+            }
+            
+            runInitialTest() {
+                const results = document.getElementById('testResults');
+                results.innerHTML = `
+                    <p><strong>Available Events:</strong> ${Object.keys(this.eventDefinitions).length}</p>
+                    <p><strong>Event IDs:</strong> ${Object.keys(this.eventDefinitions).join(', ')}</p>
+                    <p><strong>System Status:</strong> ✅ Ready</p>
+                `;
+            }
+            
+            selectRandomEvent() {
+                const eventIds = Object.keys(this.eventDefinitions);
+                const randomIndex = Math.floor(Math.random() * eventIds.length);
+                const selectedEventId = eventIds[randomIndex];
+                this.currentEvent = this.eventDefinitions[selectedEventId];
+                return this.currentEvent;
+            }
+            
+            displayEvent(event) {
+                const eventDisplay = document.getElementById('eventDisplay');
+                eventDisplay.innerHTML = `
+                    <div class="event-test">
+                        <div class="event-title">${event.title}</div>
+                        <div class="event-description">${event.description}</div>
+                        <div class="options-grid">
+                            ${Object.entries(event.options).map(([optionId, option]) => `
+                                <div class="option-card" onclick="testOption('${optionId}')">
+                                    <div class="option-title">${option.title}</div>
+                                    <div class="option-description">${option.description}</div>
+                                    <div class="option-effects">
+                                        ${option.messages.map(msg => `<div class="effect">• ${msg}</div>`).join('')}
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            testAllEvents() {
+                const eventDisplay = document.getElementById('eventDisplay');
+                let html = '<h2>All Events Test</h2>';
+                
+                Object.values(this.eventDefinitions).forEach(event => {
+                    html += `
+                        <div class="event-test">
+                            <div class="event-title">${event.title}</div>
+                            <div class="event-description">${event.description}</div>
+                            <p><strong>Options:</strong> ${Object.keys(event.options).length}</p>
+                            <p><strong>Option IDs:</strong> ${Object.keys(event.options).join(', ')}</p>
+                        </div>
+                    `;
+                });
+                
+                eventDisplay.innerHTML = html;
+            }
+        }
+        
+        const eventSystem = new EventSystemTest();
+        
+        function testRandomEvent() {
+            const event = eventSystem.selectRandomEvent();
+            eventSystem.displayEvent(event);
+        }
+        
+        function testAllEvents() {
+            eventSystem.testAllEvents();
+        }
+        
+        function testOption(optionId) {
+            if (eventSystem.currentEvent && eventSystem.currentEvent.options[optionId]) {
+                const option = eventSystem.currentEvent.options[optionId];
+                alert(`Selected: ${option.title}\n\nEffects:\n${option.messages.join('\n')}`);
+            }
+        }
+    </script>
+</body>
+</html>

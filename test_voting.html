@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voting System Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-section {
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .test-result {
+            background-color: #f8f9fa;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 3px;
+        }
+        .success { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Voting System Test</h1>
+    
+    <div class="test-section">
+        <h3>Test Event System</h3>
+        <button onclick="testEventSelection()">Test Event Selection</button>
+        <button onclick="testVotingLogic()">Test Voting Logic</button>
+        <div id="testResults"></div>
+    </div>
+
+    <script>
+        // Simplified test of the voting system
+        class VotingSystemTest {
+            constructor() {
+                this.eventDefinitions = {
+                    'housing_crisis': {
+                        id: 'housing_crisis',
+                        title: 'Housing Crisis',
+                        description: 'The country is facing a severe housing shortage.',
+                        options: {
+                            'conservative-right': {
+                                title: 'Market Solutions',
+                                description: 'Reduce regulations and let the free market solve the housing crisis.',
+                                icon: 'fas fa-home',
+                                effects: { gdpChange: { min: 0.10, max: 0.20 } },
+                                messages: ['GDP increased significantly']
+                            },
+                            'conservative-left': {
+                                title: 'Public Housing',
+                                description: 'Invest heavily in government-built social housing.',
+                                icon: 'fas fa-hammer',
+                                effects: { homelessnessChange: { min: -0.50, max: -0.30 } },
+                                messages: ['Homelessness decreased significantly']
+                            },
+                            'progressive-right': {
+                                title: 'Innovation & Incentives',
+                                description: 'Create tax incentives for sustainable housing development.',
+                                icon: 'fas fa-chart-line',
+                                effects: { unemploymentChange: { min: -0.25, max: -0.15 } },
+                                messages: ['Unemployment decreased']
+                            },
+                            'progressive-left': {
+                                title: 'Community Solutions',
+                                description: 'Support cooperative housing and community land trusts.',
+                                icon: 'fas fa-users',
+                                effects: { homelessnessChange: { min: -0.08, max: -0.02 } },
+                                messages: ['Minimal economic impact']
+                            }
+                        }
+                    }
+                };
+                this.currentEvent = null;
+            }
+            
+            selectRandomEvent() {
+                const eventIds = Object.keys(this.eventDefinitions);
+                const randomIndex = Math.floor(Math.random() * eventIds.length);
+                const selectedEventId = eventIds[randomIndex];
+                this.currentEvent = this.eventDefinitions[selectedEventId];
+                return this.currentEvent;
+            }
+            
+            testEventSelection() {
+                const results = document.getElementById('testResults');
+                results.innerHTML = '<div class="test-result">Testing event selection...</div>';
+                
+                try {
+                    const event = this.selectRandomEvent();
+                    if (event && event.options) {
+                        results.innerHTML = `
+                            <div class="test-result success">
+                                ✅ Event selection works!<br>
+                                Selected: ${event.title}<br>
+                                Options: ${Object.keys(event.options).length}
+                            </div>
+                        `;
+                    } else {
+                        results.innerHTML = '<div class="test-result error">❌ Event selection failed</div>';
+                    }
+                } catch (error) {
+                    results.innerHTML = `<div class="test-result error">❌ Error: ${error.message}</div>`;
+                }
+            }
+            
+            testVotingLogic() {
+                const results = document.getElementById('testResults');
+                results.innerHTML = '<div class="test-result">Testing voting logic...</div>';
+                
+                try {
+                    if (!this.currentEvent) {
+                        this.selectRandomEvent();
+                    }
+                    
+                    // Test option name generation
+                    const optionNames = {};
+                    Object.entries(this.currentEvent.options).forEach(([optionId, option]) => {
+                        optionNames[optionId] = option.title;
+                    });
+                    
+                    // Test user choice handling
+                    const userChoice = 'conservative-right';
+                    const expectedTitle = optionNames[userChoice];
+                    
+                    if (expectedTitle === 'Market Solutions') {
+                        results.innerHTML = `
+                            <div class="test-result success">
+                                ✅ Voting logic works!<br>
+                                User choice: ${userChoice}<br>
+                                Expected title: ${expectedTitle}<br>
+                                All option names: ${JSON.stringify(optionNames)}
+                            </div>
+                        `;
+                    } else {
+                        results.innerHTML = `
+                            <div class="test-result error">
+                                ❌ Voting logic failed<br>
+                                Expected: Market Solutions<br>
+                                Got: ${expectedTitle}
+                            </div>
+                        `;
+                    }
+                } catch (error) {
+                    results.innerHTML = `<div class="test-result error">❌ Error: ${error.message}</div>`;
+                }
+            }
+        }
+        
+        const votingTest = new VotingSystemTest();
+        
+        function testEventSelection() {
+            votingTest.testEventSelection();
+        }
+        
+        function testVotingLogic() {
+            votingTest.testVotingLogic();
+        }
+    </script>
+</body>
+</html>
