@@ -1,46 +1,26 @@
 # Political/Economical RPG
 
-A text-based political and economical role-playing game built in C++ with a web-based UI alternative.
+A web-based political and economical role-playing game built with HTML, CSS, and JavaScript.
 
 ## Project Structure
 
 ```
 rpg/
-├── src/                    # C++ source code
-│   └── main.cpp           # Main game logic and PoliticalRPG class implementation
-├── CMakeLists.txt         # CMake build configuration
 ├── web/                    # Web-based UI files
 │   ├── index.html         # Main HTML interface for web version
 │   ├── script.js          # JavaScript game logic for web version
 │   └── styles.css         # CSS styling for web interface
 ├── docs/                   # Documentation
-│   ├── README.md          # Main game documentation and build instructions
 │   ├── README_UI.md       # Web UI documentation and features
 │   └── EVENT_SYSTEM_DEMO.md # Event system architecture documentation
 ├── tests/                  # Test files and examples
 │   ├── test_*.txt         # Text-based test scenarios for various game features
 │   └── test_*.html        # HTML test pages for web UI components
-├── build/                  # Build output directory (generated, not in git)
-├── .gitignore             # Git ignore rules for build artifacts
+├── .gitignore             # Git ignore rules
 └── rpg.code-workspace     # VS Code workspace configuration
 ```
 
 ## File Descriptions
-
-### Source Code (`src/`)
-
-- **`main.cpp`**: Main C++ implementation containing the `PoliticalRPG` class with all game logic including:
-  - Party management and coalition formation
-  - Budget allocation system
-  - Political compass visualization
-  - Tax rate calculations
-  - Day progression system
-  - Government overview displays
-
-- **`CMakeLists.txt`**: CMake build configuration file that:
-  - Sets C++17 standard
-  - Configures executable output
-  - Handles Windows-specific settings
 
 ### Web Interface (`web/`)
 
@@ -63,17 +43,10 @@ rpg/
 
 ### Documentation (`docs/`)
 
-- **`README.md`**: Main game documentation covering:
-  - Features overview
-  - Build and installation instructions
-  - Game description
-  - Known issues
-  - Future development plans
-
 - **`README_UI.md`**: Web UI documentation explaining:
   - UI features and components
   - How to use the web interface
-  - Differences from C++ version
+  - Game features and mechanics
 
 - **`EVENT_SYSTEM_DEMO.md`**: Technical documentation for the event system:
   - Event definitions structure
@@ -104,13 +77,7 @@ rpg/
 
 ## Quick Start
 
-### C++ Version
-
-See [docs/README.md](docs/README.md) for detailed build instructions.
-
-### Web Version
-
-Simply open `web/index.html` in a web browser.
+Simply open `web/index.html` in a web browser to start playing.
 
 ## Features
 
@@ -128,4 +95,3 @@ Simply open `web/index.html` in a web browser.
 ## License
 
 [Add your license here]
-

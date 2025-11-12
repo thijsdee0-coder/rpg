@@ -1,6 +1,6 @@
 # Political RPG - Web UI Version
 
-Een moderne web interface voor de Political RPG game, geconverteerd van de originele C++ console applicatie.
+Een moderne web interface voor de Political RPG game.
 
 ## 🎮 Game Features
 
